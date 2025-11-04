@@ -1,16 +1,15 @@
 package com.wellsfargo.counselor.entity;
 
-
 import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
-public class Advisor {
+public class Client {
 
     @Id
     @GeneratedValue()
-    private Long advisorId;
+    private Long clientId;
 
     @Column(nullable = false)
     private String firstName;
@@ -22,28 +21,33 @@ public class Advisor {
     private String address;
 
     @Column(nullable = false)
-    private String phone;
-
-    @Column(nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "advisor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Client> clients;
+    @Column(nullable = false)
+    private String phone;
 
-    protected Advisor() {
+    // Many clients belong to one advisor
+    @ManyToOne
+    @JoinColumn(name = "advisor_id", nullable = false)
+    private Advisor advisor;
 
-    }
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Portfolio> portfolios;
 
-    public Advisor(String firstName, String lastName, String address, String phone, String email) {
+    //used by JPA to map java objects to rows
+    protected Client() {}
+
+    public Client(String firstName, String lastName, String address, String email, String phone, Advisor advisor) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
-        this.phone = phone;
         this.email = email;
+        this.phone = phone;
+        this.advisor = advisor;
     }
 
-    public Long getAdvisorId() {
-        return advisorId;
+    public Long getClientId() {
+        return clientId;
     }
 
     public String getFirstName() {
@@ -70,14 +74,6 @@ public class Advisor {
         this.address = address;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -86,7 +82,28 @@ public class Advisor {
         this.email = email;
     }
 
-    public List<Client> getClients() { return clients; }
+    public String getPhone() {
+        return phone;
+    }
 
-    public void setClients(List<Client> clients) { this.clients = clients; }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Advisor getAdvisor() {
+        return advisor;
+    }
+
+    public void setAdvisor(Advisor advisor) {
+        this.advisor = advisor;
+    }
+
+    public List<Portfolio>  getPortfolios() {
+        return portfolios;
+    }
+
+    public void setPortfolios(List<Portfolio> portfolios) {
+        this.portfolios = portfolios;
+    }
+
 }
